@@ -5,8 +5,9 @@ import Register from "./Register.jsx";
 
 const Home = () => {
   const [page, setPage] = useState("");
+
   const click = (e) => {
-    console.log(e.target.name);
+    //console.log(e.target.name);
     setPage(e.target.name);
   };
   if (page === "register") {

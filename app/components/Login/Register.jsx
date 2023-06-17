@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { supabase } from "../../../supabase.js";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -15,19 +16,21 @@ const Register = () => {
     setError(null);
 
     try {
-      // const { error } = await supabaseClient.auth.signInWithOtp({
-      //   email,
-      // });
-
-      const { error } = await supabaseClient.auth.signUp({
-        email,
-        password,
-      });
-
-      // const { error } = await supabaseClient.auth.signInWithPassword({
-      //   email,
-      //   password,
-      // });
+      if (password !== repeatPassword) {
+        setError("Le password non coincidono");
+      } else if (password.length < 8) {
+        setError("La password deve essere lunga almeno 8 caratteri");
+      } else {
+        const { error } = await supabase.auth.signUp({
+          email: email,
+          password: password,
+          options: {
+            data: {
+              username: username,
+            },
+          },
+        });
+      }
 
       if (error) {
         setError(error.msg);
@@ -39,11 +42,15 @@ const Register = () => {
     } finally {
       setIsLoading(false);
     }
+    console.log(username, email, password, repeatPassword, error);
   };
 
   return (
     <div className="fixed top-1/3 flex justify-center w-full">
-      <form className="flex flex-col justify-center w-full">
+      <form
+        className="flex flex-col justify-center w-full"
+        onSubmit={submitRegister}
+      >
         <input
           type="username"
           placeholder="Username"
