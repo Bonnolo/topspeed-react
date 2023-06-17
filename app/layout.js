@@ -11,6 +11,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="it" data-theme="forest" className="flex justify-center">
+      <link rel="icon" href="./favicon.ico" sizes="any" />
       <body className="w-full bg-base-100">
         {children}
         {/* <Footer /> */}
