@@ -2,18 +2,21 @@
 
 import { useState, useEffect } from "react";
 
-const Footer = () => {
+const Footer = ({ activePage }) => {
   const [inactive, setInactive] = useState("home");
 
-  const activeButton = (e) => {
-    const buttonPressed = e.target.parentElement.id;
-    const button = document.getElementById(buttonPressed);
+  //changes active button on navbar when {activePage} changes
+  useEffect(() => {
+    //console.log(activePage);
+    const button = document.getElementById(activePage);
     const buttonOff = document.getElementById(inactive);
-    if (buttonPressed === inactive) return;
-    switch (buttonPressed) {
+    //console.log(button, buttonOff);
+    if (activePage === inactive) return;
+    switch (activePage) {
       case "null":
         return;
       case "home":
+        //console.log("faccio cose");
         button.classList.add("active");
         buttonOff.classList.remove("active");
       case "notification":
@@ -29,12 +32,12 @@ const Footer = () => {
         button.classList.add("active");
         buttonOff.classList.remove("active");
     }
-    setInactive(buttonPressed);
-  };
-
+    setInactive(activePage);
+  }, [activePage]);
+  //Footer component
   return (
     <div className="btm-nav" id="null">
-      <button id="home" className="active" onClick={activeButton}>
+      <button id="home" className="active">
         <svg
           id="home"
           width="22"
@@ -55,7 +58,7 @@ const Footer = () => {
 
         <span className="btm-nav-label">Home</span>
       </button>
-      <button id="notification" onClick={activeButton}>
+      <button id="notification">
         <svg
           id="notification"
           width="17"
@@ -80,7 +83,7 @@ const Footer = () => {
 
         <span className="btm-nav-label">Notifiche</span>
       </button>
-      <button id="search" onClick={activeButton}>
+      <button id="search">
         <svg
           id="search"
           width="23"
@@ -100,7 +103,7 @@ const Footer = () => {
         </svg>
         <span className="btm-nav-label">Cerca</span>
       </button>
-      <button id="maps" onClick={activeButton}>
+      <button id="maps">
         <svg
           id="maps"
           width="21"
@@ -125,7 +128,7 @@ const Footer = () => {
 
         <span className="btm-nav-label">Mappa</span>
       </button>
-      <button id="chat" onClick={activeButton}>
+      <button id="chat">
         <svg
           id="chat"
           width="22"

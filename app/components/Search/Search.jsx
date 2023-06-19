@@ -1,7 +1,14 @@
 const Search = () => {
   return (
     <>
-      <div>Search</div>
+      <h1 className="flex justify-center my-4 text-lg">Cerca</h1>
+      <div className="flex justify-center">
+        <input
+          type="text"
+          placeholder="Cerca . . ."
+          className="input input-bordered input-primary w-full max-w-xs h-10"
+        />
+      </div>
     </>
   );
 };

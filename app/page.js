@@ -15,6 +15,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState("home");
 
+  //get Supabase session
   useEffect(() => {
     setLoading(true);
     supabase.auth.getSession().then((data) => {
@@ -24,14 +25,34 @@ export default function App() {
     });
   }, []);
 
+  //navigation on navbar touch
+  useEffect(() => {
+    const btm = document.querySelector(".btm-nav");
+    console.log(btm);
+    btm?.addEventListener("click", (e) => {
+      if (e.target.parentElement.id === "home") {
+        setPage("home");
+      }
+      if (e.target.parentElement.id === "search") {
+        setPage("search");
+      }
+    });
+  }, [session]);
+
   return (
     <>
       {loading && <Loading />}
       <Header />
       <main className="container w-full h-full">
         {!session && <LoginHome />}
-        {session && <Home />}
+        {session && page === "home" && <Home />}
+        {session && page === "search" && <Search />}
       </main>
+      {session && <Footer activePage={page} />}
     </>
   );
 }
+
+// {!session && <LoginHome />} case session is null, renders LoginHome component
+// {loading && <Loading />} case loading is true, renders Loading component and covers everything on the page
+// {session && page === "home" && <Home />} case session and page equals {home}, renders Home component (same for search)
