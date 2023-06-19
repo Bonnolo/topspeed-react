@@ -28,7 +28,7 @@ export default function App() {
   //navigation on navbar touch
   useEffect(() => {
     const btm = document.querySelector(".btm-nav");
-    console.log(btm);
+    //console.log(btm);
     btm?.addEventListener("click", (e) => {
       if (e.target.parentElement.id === "home") {
         setPage("home");
