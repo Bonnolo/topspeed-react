@@ -1,3 +1,5 @@
+"use client";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import misano from "../img/misano.png";
 import Footer from "../Footer";
@@ -5,6 +7,7 @@ import Footer from "../Footer";
 const Home = () => {
   return (
     <>
+      <h1 className="flex justify-center my-4 text-lg">Home</h1>
       <div>
         <div className="card card-compact w-96 bg-base-100 shadow-xl">
           <figure className="px-4">

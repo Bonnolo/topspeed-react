@@ -1,7 +1,5 @@
 "use client";
 
-import { set } from "date-fns";
-import { el } from "date-fns/locale";
 import { useState, useEffect } from "react";
 
 const Footer = () => {
