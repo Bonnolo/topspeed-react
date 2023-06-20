@@ -58,7 +58,7 @@ const Register = () => {
     <>
       {clicked && (
         <h1 className="flex justify-center">
-          Controlla l'email per conferma dell'account
+          Controlla l&apos;email per conferma dell&apos;account
         </h1>
       )}
       <div className="fixed top-1/3 flex justify-center w-full">

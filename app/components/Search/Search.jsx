@@ -6,9 +6,8 @@ import misano from "../img/misano.png";
 
 const Search = () => {
   const [circuits, setCircuits] = useState([]);
-  const [user, setUser] = useState();
   const [query, setQuery] = useState("");
-  const [display, setDisplay] = useState("");
+  const [filteredCircuits, setFilteredCircuits] = useState([]);
 
   //get circuits
   useEffect(() => {
@@ -20,31 +19,17 @@ const Search = () => {
     getCircuit();
   }, []);
 
-  //filter circuits based on query
+  //filter circuits based on searchquery
   useEffect(() => {
-    const lngth = circuits.length;
-    setDisplay(null);
-    for (let i = 0; i < lngth; i++) {
-      if (
-        circuits[i].circuit_name.toLowerCase().includes(query.toLowerCase())
-      ) {
-        setDisplay(circuits[i].circuit_name);
-      }
-      console.log(display);
-      switch (display) {
-        case "Misano":
-          document.getElementById("misano").classList.remove("hidden");
-          document.getElementById("monza").classList.add("hidden");
-          break;
-        case "Monza":
-          document.getElementById("monza").classList.remove("hidden");
-          document.getElementById("misano").classList.add("hidden");
-          break;
-        case null:
-          document.getElementById("misano").classList.add("hidden");
-          document.getElementById("monza").classList.add("hidden");
-      }
+    setFilteredCircuits(
+      circuits.filter((circuit) =>
+        circuit.circuit_name.toLowerCase().includes(query.toLowerCase())
+      )
+    );
+    if (query === "") {
+      setFilteredCircuits([]);
     }
+    //console.log(filteredCircuits);
   }, [query]);
 
   return (
@@ -60,45 +45,29 @@ const Search = () => {
             value={query}
           />
         </div>
-        <section id="misano" className="hidden flex justify-center my-1">
-          <div className="card w-96 bg-base-100 shadow-xl image-full">
-            <figure>
-              <Image src={misano} alt="Misano" className="w-full" />
-            </figure>
-            <div className="card-body">
-              <h2 className="card-title">{circuits[0]?.circuit_name}</h2>
-              <p>
-                <strong>Indirizzo:</strong> {circuits[0]?.address} <br />
-                <strong>Prossimo evento: </strong>
-                {circuits[0]?.next_event} <br />
-                <strong>Lunghezza del tracciato:</strong> {circuits[0]?.lenght}{" "}
-                m
-              </p>
-              <div className="card-actions justify-end">
-                <button className="btn btn-primary">Prenota Sessione</button>
+        {filteredCircuits.map((circuit, index) => (
+          <section key={index} className="flex justify-center my-1">
+            <div className="card w-96 bg-base-100 shadow-xl image-full">
+              <figure>
+                <Image src={misano} alt="Misano" className="w-full" />
+              </figure>
+              <div className="card-body">
+                <h2 className="card-title">{circuit?.circuit_name}</h2>
+                <p>
+                  <strong>Indirizzo:</strong> {circuit?.address} <br />
+                  <strong>Prossimo evento:</strong>
+                  {circuit?.next_event} <br />
+                  <strong>Lunghezza del tracciato:</strong> {circuit?.lenght} m
+                </p>
+                <div className="card-actions justify-end">
+                  <button className="btn btn-primary" onClick={click}>
+                    Prenota Sessione
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
-        <section id="monza" className="hidden flex justify-center my-1">
-          <div className="card w-96 bg-base-100 shadow-xl image-full">
-            <figure>
-              <Image src={misano} alt="Misano" className="w-full" />
-            </figure>
-            <div className="card-body">
-              <h2 className="card-title">{circuits[1]?.circuit_name}</h2>
-              <p>
-                <strong>Indirizzo:</strong> {circuits[1]?.address} <br />
-                <strong>Prossimo evento: </strong>
-                {circuits[1]?.next_event} <br />
-                <strong>Lunghezza del tracciato:</strong> {circuits[1]?.lenght}m
-              </p>
-              <div className="card-actions justify-end">
-                <button className="btn btn-primary">Prenota Sessione</button>
-              </div>
-            </div>
-          </div>
-        </section>
+          </section>
+        ))}
       </div>
     </>
   );
