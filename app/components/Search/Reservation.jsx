@@ -4,7 +4,9 @@ import Search from "./Search.jsx";
 import { useState, useEffect } from "react";
 
 const Reservation = () => {
+  const [value, onChange] = useState();
   const [clicked, setClicked] = useState(null);
+
   const click = (e) => {
     console.log(e);
     setClicked(e.target.id);
@@ -12,7 +14,7 @@ const Reservation = () => {
   if (clicked === "back") {
     return <Search />;
   }
-
+  console.log(value);
   return (
     <>
       <div className="grid grid-cols-3">
@@ -34,6 +36,17 @@ const Reservation = () => {
           </h1>
         </button>
         <h1 className="my-4 text-lg text-center">Misano</h1>
+      </div>
+      <div className="flex justify-center">
+        <input
+          type="datetime-local"
+          className="input input-bordered input-primary w-full max-w-xs"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+        />
+      </div>
+      <div className="flex justify-center items-end my-4 h-[170%]">
+        <button className="btn btn-primary w-full max-w-xs">Avanti</button>
       </div>
     </>
   );
