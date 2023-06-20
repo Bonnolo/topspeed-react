@@ -7,12 +7,10 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [isloading, setIsLoading] = useState(false);
   const [back, setBack] = useState(false);
 
   const submitLogin = async (event) => {
     event.preventDefault();
-    setIsLoading(true);
     setError(null);
 
     try {
@@ -30,7 +28,6 @@ const Login = () => {
       window.alert("Credenziali errate");
     } finally {
       if (error === null) {
-        setIsLoading(false);
         window.location.reload();
       } else {
         console.log(error);

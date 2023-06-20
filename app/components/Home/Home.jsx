@@ -1,8 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
 import Image from "next/image";
 import misano from "../img/misano.png";
-import Footer from "../Footer";
 
 const Home = () => {
   return (
@@ -22,7 +20,7 @@ const Home = () => {
               <strong>Record della pista:</strong> 1:31:100
             </p>
             <div className="card-actions justify-end">
-              <button className="btn btn-primary">
+              <button className="btn btn-primary" onClick={window.alert("WIP")}>
                 Visualizza partecipanti
               </button>
             </div>

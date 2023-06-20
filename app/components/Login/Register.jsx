@@ -1,8 +1,7 @@
 "use client";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../../../supabase.js";
 import LoginHome from "./Home.jsx";
-import { set } from "date-fns";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -10,10 +9,10 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [error, setError] = useState(null);
-  const [clicked, setClicked] = useState(null);
-  const [canSubmit, setCanSubmit] = useState(false);
+  const [cantSubmit, setCantSubmit] = useState(false);
   const [back, setBack] = useState(false);
 
+  // ON SUBMIT REGISTER FUNCTION IS CALLED
   const submitRegister = async (event) => {
     event.preventDefault();
 
@@ -25,7 +24,7 @@ const Register = () => {
       } else if (error) {
         return;
       } else {
-        console.log("pushing data");
+        //console.log("pushing data");
         const { dberror } = await supabase.auth.signUp({
           email: email,
           password: password,
@@ -36,35 +35,39 @@ const Register = () => {
           },
         });
         if (dberror) {
-          console.log(dberror, "1");
+          //console.log(dberror, "1");
           window.alert(dberror);
         }
+        window.alert(
+          "Registrazione avvenuta con successo! Controlla la tua email per confermare l'account"
+        );
       }
     } catch (error) {
       setError(error);
-      console.log(error, "2");
-    } finally {
-      setClicked(true);
+      //console.log(error, "2");
     }
     //console.log(username, email, password, repeatPassword, error);
   };
 
+  // if error state changes and is not null, alert the user
   useEffect(() => {
     if (error) {
       window.alert(error);
-      setClicked(false);
       setError(null);
     }
   }, [error]);
 
+  // if all fields are filled, enable submit button
+  // disable property is set to false by default (intentionally used "Can't")
   useEffect(() => {
     if (username && email && password && repeatPassword) {
-      setCanSubmit(false);
+      setCantSubmit(false);
     } else {
-      setCanSubmit(true);
+      setCantSubmit(true);
     }
   }, [username, email, password, repeatPassword]);
 
+  //go back to Home
   const click = (e) => {
     setBack(true);
   };
@@ -95,11 +98,6 @@ const Register = () => {
         </button>
         <h1 className="my-4 text-lg text-center">Registrati</h1>
       </div>
-      {clicked && (
-        <h1 className="flex justify-center">
-          Controlla l&apos;email per conferma dell&apos;account
-        </h1>
-      )}
       <div className="fixed top-1/3 flex justify-center w-full">
         <form
           className="flex flex-col justify-center w-full"
@@ -136,7 +134,7 @@ const Register = () => {
           <button
             type="submit"
             className="btn btn-outline my-2 mx-4"
-            disabled={canSubmit}
+            disabled={cantSubmit}
           >
             Registrati
           </button>
