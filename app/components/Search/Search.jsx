@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 import { supabase } from "../../../supabase.js";
 import Image from "next/image";
 import misano from "../img/misano.png";
+import Reservation from "./Reservation.jsx";
 
 const Search = () => {
   const [circuits, setCircuits] = useState([]);
   const [query, setQuery] = useState("");
   const [filteredCircuits, setFilteredCircuits] = useState([]);
+  const [clicked, setClicked] = useState(null);
 
   //get circuits
   useEffect(() => {
@@ -31,6 +33,14 @@ const Search = () => {
     }
     //console.log(filteredCircuits);
   }, [query]);
+
+  const click = (e) => {
+    console.log(e.target.name);
+    setClicked(e.target.name);
+  };
+  if (clicked === "prenotaSessione") {
+    return <Reservation />;
+  }
 
   return (
     <>
@@ -60,7 +70,11 @@ const Search = () => {
                   <strong>Lunghezza del tracciato:</strong> {circuit?.lenght} m
                 </p>
                 <div className="card-actions justify-end">
-                  <button className="btn btn-primary" onClick={click}>
+                  <button
+                    className="btn btn-primary"
+                    name="prenotaSessione"
+                    onClick={click}
+                  >
                     Prenota Sessione
                   </button>
                 </div>
