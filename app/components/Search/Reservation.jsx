@@ -40,6 +40,7 @@ const Reservation = () => {
       <div className="flex justify-center">
         <input
           type="datetime-local"
+          placeholder="Inserisci data e ora"
           className="input input-bordered input-primary w-full max-w-xs"
           onChange={(e) => onChange(e.target.value)}
         />
