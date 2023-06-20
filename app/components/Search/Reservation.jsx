@@ -41,7 +41,6 @@ const Reservation = () => {
         <input
           type="datetime-local"
           className="input input-bordered input-primary w-full max-w-xs"
-          value={value}
           onChange={(e) => onChange(e.target.value)}
         />
       </div>
