@@ -37,8 +37,8 @@ const Reservation = () => {
         </button>
         <h1 className="my-4 text-lg text-center">Misano</h1>
       </div>
+      <h2 className="flex justify-center my-4">Inserisci data e ora qui</h2>
       <div className="flex justify-center">
-        <h2>Inserisci data e ora</h2>
         <input
           type="datetime-local"
           placeholder="Inserisci data e ora"
@@ -46,7 +46,7 @@ const Reservation = () => {
           onChange={(e) => onChange(e.target.value)}
         />
       </div>
-      <div className="flex justify-center items-end my-4 h-[170%]">
+      <div className="flex justify-center items-end my-4 h-[128%]">
         <button className="btn btn-primary w-full max-w-xs">Avanti</button>
       </div>
     </>
