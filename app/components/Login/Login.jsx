@@ -8,12 +8,15 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [back, setBack] = useState(false);
+  const [reload, setReload] = useState(false);
 
   const submitLogin = async (event) => {
     event.preventDefault();
     setError(null);
+    setReload(true);
 
     try {
+      //console.log("pushing data");
       const { error } = await supabase.auth.signInWithPassword({
         email: email,
         password: password,
@@ -21,16 +24,18 @@ const Login = () => {
 
       if (error) {
         setError(error.msg);
+        setReload(false);
         window.alert("Credenziali errate");
+        //console.log(error, "1");
       }
     } catch (error) {
       setError(error.msg);
+      setReload(false);
       window.alert("Credenziali errate");
+      //console.log(error, "2");
     } finally {
-      if (error === null) {
+      if (reload) {
         window.location.reload();
-      } else {
-        console.log(error);
       }
     }
   };
