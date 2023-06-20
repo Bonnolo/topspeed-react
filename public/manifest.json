@@ -1,9 +1,9 @@
 {
     "name": "TopSpeed",
     "short_name": "TopSpeed",
-    "theme_color": "#fffff",
-    "background_color": "#00000",
-    "display": "browser",
+    "theme_color": "#ffffff",
+    "background_color": "#000000",
+    "display": "fullscreen",
     "orientation": "portrait",
     "scope": "/",
     "start_url": "/",
