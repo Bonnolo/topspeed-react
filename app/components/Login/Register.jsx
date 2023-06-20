@@ -2,6 +2,7 @@
 import { useState, useEffect, use } from "react";
 import { supabase } from "../../../supabase.js";
 import LoginHome from "./Home.jsx";
+import { set } from "date-fns";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -15,15 +16,17 @@ const Register = () => {
 
   const submitRegister = async (event) => {
     event.preventDefault();
-    setError(null);
 
     try {
       if (password !== repeatPassword) {
         setError("Le password non coincidono");
       } else if (password.length < 8) {
         setError("La password deve essere lunga almeno 8 caratteri");
+      } else if (error) {
+        return;
       } else {
-        const { error } = await supabase.auth.signUp({
+        console.log("pushing data");
+        const { dberror } = await supabase.auth.signUp({
           email: email,
           password: password,
           options: {
@@ -32,21 +35,27 @@ const Register = () => {
             },
           },
         });
-      }
-
-      if (error) {
-        setError(error.msg);
-        window.alert(error.msg);
-      } else {
-        setIsSubmitted(true);
+        if (dberror) {
+          console.log(dberror, "1");
+          window.alert(dberror);
+        }
       }
     } catch (error) {
-      setError(error.msg);
-      window.alert(error.msg);
+      setError(error);
+      console.log(error, "2");
     } finally {
+      setClicked(true);
     }
     //console.log(username, email, password, repeatPassword, error);
   };
+
+  useEffect(() => {
+    if (error) {
+      window.alert(error);
+      setClicked(false);
+      setError(null);
+    }
+  }, [error]);
 
   useEffect(() => {
     if (username && email && password && repeatPassword) {
@@ -128,7 +137,6 @@ const Register = () => {
             type="submit"
             className="btn btn-outline my-2 mx-4"
             disabled={canSubmit}
-            onClick={() => setClicked(true)}
           >
             Registrati
           </button>
