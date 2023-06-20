@@ -1,11 +1,21 @@
 "use client";
 
 import Search from "./Search.jsx";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 
 const Reservation = () => {
   const [value, onChange] = useState();
   const [clicked, setClicked] = useState(null);
+
+  useEffect(() => {
+    let date = new Date();
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    let hour = date.getHours();
+    let minutes = date.getMinutes();
+    onChange(year + "-" + month + "-" + day + "T" + hour + ":" + minutes);
+  }, []);
 
   const click = (e) => {
     console.log(e);
@@ -15,6 +25,7 @@ const Reservation = () => {
     return <Search />;
   }
   console.log(value);
+  //2023-06-22T18:13
   return (
     <>
       <div className="grid grid-cols-3">
@@ -43,6 +54,7 @@ const Reservation = () => {
           type="datetime-local"
           placeholder="Inserisci data e ora"
           className="input input-bordered input-primary w-full max-w-xs"
+          value={value}
           onChange={(e) => onChange(e.target.value)}
         />
       </div>
