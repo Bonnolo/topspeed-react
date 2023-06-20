@@ -46,7 +46,7 @@ const Search = () => {
     <>
       <div>
         <h1 className="flex justify-center my-4 text-lg">Cerca</h1>
-        <div className="flex justify-center w-96 my-1">
+        <div className="flex justify-center">
           <input
             type="text"
             placeholder="Cerca circuito . . ."
