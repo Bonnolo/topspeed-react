@@ -3,7 +3,7 @@
 import Search from "./Search.jsx";
 import { useState, useEffect, use } from "react";
 
-const Reservation = () => {
+const Reservation = (circuit) => {
   const [value, onChange] = useState();
   const [clicked, setClicked] = useState(null);
 
@@ -18,13 +18,13 @@ const Reservation = () => {
   }, []);
 
   const click = (e) => {
-    console.log(e);
+    //console.log(e);
     setClicked(e.target.id);
   };
   if (clicked === "back") {
     return <Search />;
   }
-  console.log(value);
+  //console.log(value);
   //2023-06-22T18:13
   return (
     <>

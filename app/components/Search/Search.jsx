@@ -35,7 +35,7 @@ const Search = () => {
   }, [query]);
 
   const click = (e) => {
-    console.log(e.target.name);
+    //console.log(e.target.name);
     setClicked(e.target.name);
   };
   if (clicked === "prenotaSessione") {
