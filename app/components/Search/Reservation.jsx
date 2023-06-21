@@ -1,10 +1,10 @@
 "use client";
 
 import Search from "./Search.jsx";
-import Payment from "./Payment.jsx";
 //
 import { useState, useEffect } from "react";
 import { supabase } from "../../../supabase.js";
+import { set } from "date-fns";
 
 const Reservation = ({ circuitID }) => {
   const [value, setValue] = useState(() => {
@@ -17,7 +17,9 @@ const Reservation = ({ circuitID }) => {
   const [clicked, setClicked] = useState(null);
   const [id, setId] = useState(circuitID);
   const [date, setDate] = useState([]);
+  const [pushed, setPushed] = useState(false);
 
+  //gets the dates events from the db
   useEffect(() => {
     //console.log(id, "id");
     const getDates = async () => {
@@ -32,6 +34,7 @@ const Reservation = ({ circuitID }) => {
     getDates();
   }, []);
 
+  //gets the dates from the db and converts them to a readable format
   useEffect(() => {
     //console.log(events, "events");
     setDate(
@@ -50,15 +53,28 @@ const Reservation = ({ circuitID }) => {
     //console.log(date, "date");
   }, [events]);
 
+  //pushes the new date to the db
+  useEffect(() => {
+    if (pushed) {
+      const pushDate = async () => {
+        const db = await supabase
+          .from("circuits")
+          .update({ next_events: [...events, { event: value }] })
+          .eq("circuit_name", id);
+      };
+      pushDate();
+    }
+  }, [pushed]);
+
   const click = (e) => {
+    if (e.target.id === "push") {
+      setPushed(true);
+    }
     //console.log(e);
     setClicked(e.target.id);
   };
   if (clicked === "back") {
     return <Search />;
-  }
-  if (clicked === "toPayment") {
-    return <Payment />;
   }
   //console.log(value);
   //2023-06-22T18:13
@@ -103,11 +119,7 @@ const Reservation = ({ circuitID }) => {
         </section>
       ))}
       <div className="fixed z-30 bottom-28 left-1/2 translate-x-[-50%] w-10/12">
-        <button
-          id="toPayment"
-          className="btn btn-primary w-full"
-          onClick={click}
-        >
+        <button id="push" className="btn btn-primary w-full" onClick={click}>
           Avanti
         </button>
       </div>
