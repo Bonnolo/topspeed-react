@@ -2,20 +2,52 @@
 
 import Search from "./Search.jsx";
 import { useState, useEffect, use } from "react";
+import { supabase } from "../../../supabase.js";
+import { set } from "date-fns";
 
-const Reservation = (circuit) => {
-  const [value, onChange] = useState();
+const Reservation = ({ circuitID }) => {
+  const [value, setValue] = useState(() => {
+    let date = new Date();
+    date.setHours(new Date().getHours() + 2);
+    let localDate = date.toISOString().slice(0, 16);
+    return localDate;
+  });
+  const [events, setEvents] = useState([]);
   const [clicked, setClicked] = useState(null);
+  const [id, setId] = useState(circuitID);
+  const [date, setDate] = useState([]);
 
   useEffect(() => {
-    let date = new Date();
-    let year = date.getFullYear();
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
-    let hour = date.getHours();
-    let minutes = date.getMinutes();
-    onChange(year + "-" + month + "-" + day + "T" + hour + ":" + minutes);
+    //console.log(id, "id");
+    const getDates = async () => {
+      const db = await supabase
+        .from("circuits")
+        .select("next_events")
+        .eq("circuit_name", id);
+      //.then((res) => console.log(res.data, "done"));
+      setEvents(db.data[0].next_events);
+      //console.log(events.data, "data");
+    };
+    getDates();
   }, []);
+
+  useEffect(() => {
+    console.log(events, "events");
+    setDate(
+      events.map((when) => {
+        console.log(when, "when");
+        const newDate = new Date(when.event);
+        const DD = newDate.getDate().toString().padStart(2, "0");
+        const MM = newDate.getMonth() + 1;
+        const MMstr = MM.toString().padStart(2, "0");
+        const YYYY = newDate.getFullYear();
+        const hh = newDate.getHours().toString().padStart(2, "0");
+        const mm = newDate.getMinutes().toString().padStart(2, "0");
+        return `${DD}/${MMstr}/${YYYY} ${hh}:${mm}`;
+      })
+    );
+    console.log(date, "date");
+  }, [events]);
 
   const click = (e) => {
     //console.log(e);
@@ -24,6 +56,9 @@ const Reservation = (circuit) => {
   if (clicked === "back") {
     return <Search />;
   }
+  // if (clicked === "toPayment") {
+  //   return;
+  // }
   //console.log(value);
   //2023-06-22T18:13
   return (
@@ -46,7 +81,7 @@ const Reservation = (circuit) => {
             indietro
           </h1>
         </button>
-        <h1 className="my-4 text-lg text-center">Misano</h1>
+        <h1 className="my-4 text-lg text-center">{id}</h1>
       </div>
       <h2 className="flex justify-center my-4">Inserisci data e ora qui</h2>
       <div className="flex justify-center">
@@ -55,11 +90,25 @@ const Reservation = (circuit) => {
           placeholder="Inserisci data e ora"
           className="input input-bordered input-primary w-full max-w-xs"
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => setValue(e.target.value)}
         />
       </div>
-      <div className="flex justify-center items-end my-4 h-[128%]">
-        <button className="btn btn-primary w-full max-w-xs">Avanti</button>
+      <div className="flex justify-center my-4">
+        <h2>Date non disponibili</h2>
+      </div>
+      {date.map((when, index) => (
+        <section key={index} className="mx-2 my-2 flex justify-center">
+          <p>Data: {when}</p>
+        </section>
+      ))}
+      <div className="fixed z-30 bottom-28 left-1/2 translate-x-[-50%] w-10/12">
+        <button
+          id="toPayment"
+          className="btn btn-primary w-full"
+          onClick={click}
+        >
+          Avanti
+        </button>
       </div>
     </>
   );
