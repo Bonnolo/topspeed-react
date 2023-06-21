@@ -36,7 +36,7 @@ const Footer = ({ activePage }) => {
   }, [activePage]);
   //Footer component
   return (
-    <div className="btm-nav mb-5" id="null">
+    <div className="btm-nav pb-5 h-[85px]" id="null">
       <button id="home" className="active">
         <svg
           id="home"

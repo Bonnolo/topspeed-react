@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { supabase } from "../../../supabase.js";
 import Image from "next/image";
 import misano from "../img/misano.png";
@@ -10,6 +10,7 @@ const Search = () => {
   const [query, setQuery] = useState("");
   const [filteredCircuits, setFilteredCircuits] = useState([]);
   const [clicked, setClicked] = useState(null);
+  const [id, setId] = useState("");
 
   //get circuits
   useEffect(() => {
@@ -28,6 +29,7 @@ const Search = () => {
         circuit.circuit_name.toLowerCase().includes(query.toLowerCase())
       )
     );
+
     if (query === "") {
       setFilteredCircuits([]);
     }
@@ -35,11 +37,12 @@ const Search = () => {
   }, [query]);
 
   const click = (e) => {
-    //console.log(e.target.name);
+    setId(e.target.id);
+    //console.log(e.target.id);
     setClicked(e.target.name);
   };
   if (clicked === "prenotaSessione") {
-    return <Reservation />;
+    return <Reservation circuitID={id} />;
   }
 
   return (
@@ -66,12 +69,13 @@ const Search = () => {
                 <p>
                   <strong>Indirizzo:</strong> {circuit?.address} <br />
                   <strong>Prossimo evento:</strong>
-                  {circuit?.next_event} <br />
+                  {circuit?.next_events[0].event} <br />
                   <strong>Lunghezza del tracciato:</strong> {circuit?.lenght} m
                 </p>
                 <div className="card-actions justify-end">
                   <button
                     className="btn btn-primary"
+                    id={circuit?.circuit_name}
                     name="prenotaSessione"
                     onClick={click}
                   >
