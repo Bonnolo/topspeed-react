@@ -18,6 +18,7 @@ const Reservation = ({ circuitID }) => {
   const [id, setId] = useState(circuitID);
   const [date, setDate] = useState([]);
   const [pushed, setPushed] = useState(false);
+  const [error, setError] = useState(null);
 
   //gets the dates events from the db
   useEffect(() => {
@@ -51,16 +52,46 @@ const Reservation = ({ circuitID }) => {
       })
     );
     //console.log(date, "date");
-  }, [events]);
+  }, [events, pushed]);
+
+  //checks if the date is already in the db || if the date is empty
+  useEffect(() => {
+    events.map((date) => {
+      if (date.event.includes(value)) {
+        setError("Data già presente");
+        setPushed(false);
+      }
+    });
+    if (value === "") {
+      setError("Inserisci una data");
+      setPushed(false);
+    }
+    if (error) {
+      window.alert(error);
+      setError(null);
+    }
+  }, [date]);
 
   //pushes the new date to the db
   useEffect(() => {
     if (pushed) {
       const pushDate = async () => {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        console.log(user.user_metadata.username, "user");
+        events.push({
+          event: value + ":00",
+          username: user.user_metadata.username,
+        });
         const db = await supabase
           .from("circuits")
-          .update({ next_events: [...events, { event: value }] })
-          .eq("circuit_name", id);
+          .update({ next_events: events })
+          .eq("circuit_name", id)
+          .select();
+        setEvents(db.data[0].next_events);
+        //console.log(db, "db");
+        window.alert("Data inserita con successo");
       };
       pushDate();
     }
@@ -115,7 +146,7 @@ const Reservation = ({ circuitID }) => {
       </div>
       {date.map((when, index) => (
         <section key={index} className="mx-2 my-2 flex justify-center">
-          <p>Data: {when}</p>
+          <p> {when}</p>
         </section>
       ))}
       <div className="fixed z-30 bottom-28 left-1/2 translate-x-[-50%] w-10/12">
