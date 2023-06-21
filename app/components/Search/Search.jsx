@@ -1,9 +1,10 @@
 "use client";
-import { useState, useEffect, use } from "react";
-import { supabase } from "../../../supabase.js";
 import Image from "next/image";
 import misano from "../img/misano.png";
 import Reservation from "./Reservation.jsx";
+//
+import { useState, useEffect } from "react";
+import { supabase } from "../../../supabase.js";
 
 const Search = () => {
   const [circuits, setCircuits] = useState([]);

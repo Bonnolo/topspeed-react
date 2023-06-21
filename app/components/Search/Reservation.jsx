@@ -1,9 +1,10 @@
 "use client";
 
 import Search from "./Search.jsx";
-import { useState, useEffect, use } from "react";
+import Payment from "./Payment.jsx";
+//
+import { useState, useEffect } from "react";
 import { supabase } from "../../../supabase.js";
-import { set } from "date-fns";
 
 const Reservation = ({ circuitID }) => {
   const [value, setValue] = useState(() => {
@@ -32,10 +33,10 @@ const Reservation = ({ circuitID }) => {
   }, []);
 
   useEffect(() => {
-    console.log(events, "events");
+    //console.log(events, "events");
     setDate(
       events.map((when) => {
-        console.log(when, "when");
+        //console.log(when, "when");
         const newDate = new Date(when.event);
         const DD = newDate.getDate().toString().padStart(2, "0");
         const MM = newDate.getMonth() + 1;
@@ -46,7 +47,7 @@ const Reservation = ({ circuitID }) => {
         return `${DD}/${MMstr}/${YYYY} ${hh}:${mm}`;
       })
     );
-    console.log(date, "date");
+    //console.log(date, "date");
   }, [events]);
 
   const click = (e) => {
@@ -56,9 +57,9 @@ const Reservation = ({ circuitID }) => {
   if (clicked === "back") {
     return <Search />;
   }
-  // if (clicked === "toPayment") {
-  //   return;
-  // }
+  if (clicked === "toPayment") {
+    return <Payment />;
+  }
   //console.log(value);
   //2023-06-22T18:13
   return (
