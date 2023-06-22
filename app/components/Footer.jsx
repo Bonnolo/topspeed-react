@@ -36,7 +36,7 @@ const Footer = ({ activePage }) => {
   }, [activePage]);
   //Footer component
   return (
-    <div className="btm-nav pb-5 h-[85px]" id="null">
+    <footer className="btm-nav pb-5 h-[85px]" id="null">
       <button id="home" className="active">
         <svg
           id="home"
@@ -149,7 +149,7 @@ const Footer = ({ activePage }) => {
 
         <span className="btm-nav-label">Chat</span>
       </button>
-    </div>
+    </footer>
   );
 };
 

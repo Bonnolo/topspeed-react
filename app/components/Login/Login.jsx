@@ -13,7 +13,6 @@ const Login = () => {
   const submitLogin = async (event) => {
     event.preventDefault();
     setError(null);
-    setReload(true);
 
     try {
       //console.log("pushing data");
@@ -21,24 +20,29 @@ const Login = () => {
         email: email,
         password: password,
       });
-
+      //console.log(error, "error");
       if (error) {
         setError(error.msg);
         setReload(false);
         window.alert("Credenziali errate");
         //console.log(error, "1");
+      } else {
+        setReload(true);
       }
     } catch (error) {
       setError(error.msg);
       setReload(false);
       window.alert("Credenziali errate");
       //console.log(error, "2");
-    } finally {
-      if (reload) {
-        window.location.reload();
-      }
     }
   };
+
+  useEffect(() => {
+    if (reload) {
+      window.location.reload();
+    }
+  }, [reload]);
+
   const click = () => {
     setBack(true);
   };

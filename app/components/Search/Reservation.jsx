@@ -4,7 +4,6 @@ import Search from "./Search.jsx";
 //
 import { useState, useEffect } from "react";
 import { supabase } from "../../../supabase.js";
-import { set } from "date-fns";
 
 const Reservation = ({ circuitID }) => {
   const [value, setValue] = useState(() => {
@@ -18,7 +17,7 @@ const Reservation = ({ circuitID }) => {
   const [id, setId] = useState(circuitID);
   const [date, setDate] = useState([]);
   const [pushed, setPushed] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(true);
 
   //gets the dates events from the db
   useEffect(() => {
@@ -56,30 +55,29 @@ const Reservation = ({ circuitID }) => {
 
   //checks if the date is already in the db || if the date is empty
   useEffect(() => {
+    setError(false);
+    // console.log(value, "value");
     events.map((date) => {
+      //console.log(date.event, "date");
       if (date.event.includes(value)) {
-        setError("Data già presente");
-        setPushed(false);
+        setError(true);
+        window.alert("Data non disponibile");
       }
     });
     if (value === "") {
-      setError("Inserisci una data");
-      setPushed(false);
+      window.alert("Inserisci una data");
+      setError(true);
     }
-    if (error) {
-      window.alert(error);
-      setError(null);
-    }
-  }, [date]);
+  }, [value]);
 
   //pushes the new date to the db
   useEffect(() => {
-    if (pushed) {
+    if (pushed && !error) {
       const pushDate = async () => {
         const {
           data: { user },
         } = await supabase.auth.getUser();
-        console.log(user.user_metadata.username, "user");
+        //console.log(user.user_metadata.username, "user");
         events.push({
           event: value + ":00",
           username: user.user_metadata.username,
@@ -91,7 +89,7 @@ const Reservation = ({ circuitID }) => {
           .select();
         setEvents(db.data[0].next_events);
         //console.log(db, "db");
-        window.alert("Data inserita con successo");
+        window.alert("Prenotazione avvenuta con successo");
       };
       pushDate();
     }
@@ -141,16 +139,23 @@ const Reservation = ({ circuitID }) => {
           onChange={(e) => setValue(e.target.value)}
         />
       </div>
-      <div className="flex justify-center my-4">
-        <h2>Date non disponibili</h2>
-      </div>
-      {date.map((when, index) => (
-        <section key={index} className="mx-2 my-2 flex justify-center">
-          <p> {when}</p>
+      <h2 className="flex justify-center my-4">Date non disponibili</h2>
+      <div className="relative h-[350px] overflow-hidden">
+        <section className="mx-2 max-h-[340px] overflow-auto my-2 flex justify-center">
+          <div>
+            {date.map((when, index) => (
+              <p key={index}> {when}</p>
+            ))}
+          </div>
         </section>
-      ))}
+      </div>
       <div className="fixed z-30 bottom-28 left-1/2 translate-x-[-50%] w-10/12">
-        <button id="push" className="btn btn-primary w-full" onClick={click}>
+        <button
+          id="push"
+          className="btn btn-primary w-full"
+          onClick={click}
+          disabled={error}
+        >
           Avanti
         </button>
       </div>
