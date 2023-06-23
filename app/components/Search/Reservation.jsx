@@ -14,22 +14,28 @@ const Reservation = ({ circuitID }) => {
   });
   const [events, setEvents] = useState([]);
   const [clicked, setClicked] = useState(null);
-  const [id, setId] = useState(circuitID);
+  const [id, setId] = useState(circuitID[0]);
   const [date, setDate] = useState([]);
   const [pushed, setPushed] = useState(false);
   const [error, setError] = useState(true);
+  const [location, setLocation] = useState(circuitID[1]);
+  const [partecipants, setPartecipants] = useState();
 
   //gets the dates events from the db
   useEffect(() => {
+    console.log(circuitID, "circuitID");
     //console.log(id, "id");
     const getDates = async () => {
-      const db = await supabase
-        .from("circuits")
-        .select("next_events")
-        .eq("circuit_name", id);
+      const { data } = await supabase
+        .from("reservation")
+        .select("*")
+        .eq("circuit", id);
       //.then((res) => console.log(res.data, "done"));
-      setEvents(db.data[0].next_events);
-      //console.log(events.data, "data");
+      setEvents(
+        data.map((data) => {
+          return data.date_event;
+        })
+      );
     };
     getDates();
   }, []);
@@ -40,7 +46,7 @@ const Reservation = ({ circuitID }) => {
     setDate(
       events.map((when) => {
         //console.log(when, "when");
-        const newDate = new Date(when.event);
+        const newDate = new Date(when);
         const DD = newDate.getDate().toString().padStart(2, "0");
         const MM = newDate.getMonth() + 1;
         const MMstr = MM.toString().padStart(2, "0");
@@ -56,10 +62,10 @@ const Reservation = ({ circuitID }) => {
   //checks if the date is already in the db || if the date is empty
   useEffect(() => {
     setError(false);
-    // console.log(value, "value");
+    console.log(events, "events");
     events.map((date) => {
-      //console.log(date.event, "date");
-      if (date.event.includes(value)) {
+      console.log(date, "date");
+      if (date.includes(value)) {
         setError(true);
         window.alert("Data non disponibile");
       }
@@ -68,7 +74,11 @@ const Reservation = ({ circuitID }) => {
       window.alert("Inserisci una data");
       setError(true);
     }
-  }, [value]);
+    if (partecipants === 0) {
+      window.alert("Inserisci il numero di partecipanti");
+      setError(true);
+    }
+  }, [value, partecipants]);
 
   //pushes the new date to the db
   useEffect(() => {
@@ -78,17 +88,25 @@ const Reservation = ({ circuitID }) => {
           data: { user },
         } = await supabase.auth.getUser();
         //console.log(user.user_metadata.username, "user");
-        events.push({
-          event: value + ":00",
-          username: user.user_metadata.username,
-        });
-        const db = await supabase
-          .from("circuits")
-          .update({ next_events: events })
-          .eq("circuit_name", id)
-          .select();
-        setEvents(db.data[0].next_events);
-        //console.log(db, "db");
+        const { error } = await supabase.from("reservation").insert([
+          {
+            username: user.user_metadata.username,
+            circuit: id,
+            date_event: value,
+            location: location,
+          },
+        ]);
+        const { data } = await supabase
+          .from("reservation")
+          .select("*")
+          .eq("circuit", id);
+        //.then((res) => console.log(res.data, "done"));
+        setEvents(
+          data.map((data) => {
+            return data.date_event;
+          })
+        );
+        //console.log(data, "db");
         window.alert("Prenotazione avvenuta con successo");
       };
       pushDate();
@@ -130,11 +148,11 @@ const Reservation = ({ circuitID }) => {
         <h1 className="my-4 text-lg text-center">{id}</h1>
       </div>
       <h2 className="flex justify-center my-4">Inserisci data e ora qui</h2>
-      <div className="flex justify-center">
+      <div className="flex justify-center flex-wrap">
         <input
           type="datetime-local"
           placeholder="Inserisci data e ora"
-          className="input input-bordered input-primary w-full max-w-xs"
+          className="input input-bordered input-primary w-full max-w-xs my-2"
           value={value}
           onChange={(e) => setValue(e.target.value)}
         />

@@ -12,6 +12,7 @@ const Search = () => {
   const [filteredCircuits, setFilteredCircuits] = useState([]);
   const [clicked, setClicked] = useState(null);
   const [id, setId] = useState("");
+  const [location, setLocation] = useState("");
 
   //get circuits
   useEffect(() => {
@@ -39,11 +40,12 @@ const Search = () => {
 
   const click = (e) => {
     setId(e.target.id);
-    //console.log(e.target.id);
+    setLocation(e.target.attributes[2].value);
+    console.log(e);
     setClicked(e.target.name);
   };
   if (clicked === "prenotaSessione") {
-    return <Reservation circuitID={id} />;
+    return <Reservation circuitID={[id, location]} />;
   }
 
   return (
@@ -69,14 +71,13 @@ const Search = () => {
                 <h2 className="card-title">{circuit?.circuit_name}</h2>
                 <p>
                   <strong>Indirizzo:</strong> {circuit?.address} <br />
-                  <strong>Prossimo evento:</strong>
-                  {circuit?.next_events[0].event} <br />
                   <strong>Lunghezza del tracciato:</strong> {circuit?.lenght} m
                 </p>
                 <div className="card-actions justify-end">
                   <button
                     className="btn btn-primary"
                     id={circuit?.circuit_name}
+                    location={circuit?.address}
                     name="prenotaSessione"
                     onClick={click}
                   >

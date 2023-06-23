@@ -3,7 +3,7 @@ import logo from "./img/imagetopspeed.png";
 
 const Header = () => {
   return (
-    <header className="flex justify-center my-11">
+    <header className="flex justify-center my-6">
       <Image src={logo} alt="logo" />
     </header>
   );
