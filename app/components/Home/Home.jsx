@@ -77,7 +77,7 @@ const Home = () => {
                 setPage(page);
               }}
             >
-              <Image src={blankAvatar} />
+              <Image src={blankAvatar} alt="User Avatar" />
             </button>
           </div>
         </div>
@@ -101,13 +101,13 @@ const Home = () => {
                   <div className="card-body">
                     <h2 className="card-title">{event.circuit}</h2>
                     <p>
-                      <strong>Creato da: </strong> {event.username} <br />
-                      <strong>Partecipanti: </strong>
+                      Creato da: {event.username} <br />
+                      Partecipanti:
                       {event.patecipants?.length + 1 || 1}
                       <br />
-                      <strong>Prossimo evento: </strong>
+                      Prossimo evento:
                       {event.event} <br />
-                      <strong>Luogo: </strong> {event.location}
+                      Luogo: {event.location}
                     </p>
                     <div className="card-actions justify-end">
                       <button

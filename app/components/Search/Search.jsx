@@ -70,8 +70,8 @@ const Search = () => {
               <div className="card-body">
                 <h2 className="card-title">{circuit?.circuit_name}</h2>
                 <p>
-                  <strong>Indirizzo:</strong> {circuit?.address} <br />
-                  <strong>Lunghezza del tracciato:</strong> {circuit?.lenght} m
+                  Indirizzo: {circuit?.address} <br />
+                  Lunghezza del tracciato: {circuit?.lenght} m
                 </p>
                 <div className="card-actions justify-end">
                   <button
