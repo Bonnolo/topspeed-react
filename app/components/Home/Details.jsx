@@ -169,7 +169,7 @@ const Details = ({ eventID }) => {
           </p>
         </div>
         <div className="my-4">
-          <p>TOT. partecipanti: {partecipants?.length || 1}</p>
+          <p>TOT. partecipanti: {partecipants?.length + 1 || 1}</p>
         </div>
       </div>
 
