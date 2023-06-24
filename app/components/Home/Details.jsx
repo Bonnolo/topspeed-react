@@ -6,11 +6,16 @@ import Image from "next/image";
 
 import misanoMap from "../img/misanoMap.png";
 import monzaMap from "../img/monzaMap.png";
+import { set } from "date-fns";
 
 const Details = ({ eventID }) => {
   const [back, setBack] = useState(false);
   const [eventInfo, setEventInfo] = useState([]);
   const [imgSrc, setImgSrc] = useState();
+  const [readableDate, setReadableDate] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+  const [user, setUser] = useState("");
+  const [partecipants, setPartecipants] = useState([]);
 
   useEffect(() => {
     const eventData = async () => {
@@ -26,6 +31,31 @@ const Details = ({ eventID }) => {
   }, []);
 
   useEffect(() => {
+    const getPartecipants = async () => {
+      const { data } = await supabase
+        .from("reservation")
+        .select("partecipants")
+        .eq("id", eventID);
+      //console.log(data[0].partecipants, "partecipants");
+      setPartecipants(data[0].partecipants);
+    };
+    getPartecipants();
+  }, []);
+
+  //gets the dates from the db and converts them to a readable format
+  useEffect(() => {
+    //console.log(events, "events");
+    const newDate = new Date(eventInfo.date_event);
+    const DD = newDate.getDate().toString().padStart(2, "0");
+    const MM = newDate.getMonth() + 1;
+    const MMstr = MM.toString().padStart(2, "0");
+    const YYYY = newDate.getFullYear();
+    const hh = newDate.getHours().toString().padStart(2, "0");
+    const mm = newDate.getMinutes().toString().padStart(2, "0");
+    setReadableDate(`${DD}/${MMstr}/${YYYY} ${hh}:${mm}`); //console.log(date, "date");
+  }, [eventInfo]);
+
+  useEffect(() => {
     if (eventInfo.circuit === "Misano") {
       setImgSrc(misanoMap);
     }
@@ -33,6 +63,52 @@ const Details = ({ eventID }) => {
       setImgSrc(monzaMap);
     }
   }, [eventInfo]);
+
+  useEffect(() => {
+    const subscribe = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      //console.log(user.user_metadata.username);
+      setUser(user.user_metadata.username);
+      if (subscribed) {
+        const { data } = await supabase
+          .from("reservation")
+          .select("*")
+          .eq("id", eventID);
+        //console.log(data[0].partecipants, "data");
+        setPartecipants(data[0].partecipants);
+        if (eventInfo.username !== user.user_metadata.username) {
+          console.log("not the same user");
+          const filtered = partecipants.map((partecipant) => {
+            if (partecipant.username === user.user_metadata.username) {
+              return partecipant;
+            }
+          });
+          console.log(filtered, "if");
+          if (filtered.length === 0) {
+            console.log("not subscribed");
+            partecipants.push({ username: user.user_metadata.username });
+            //console.log(partecipants, "partecipants");
+            const { data, error } = await supabase
+              .from("reservation")
+              .update({ partecipants: partecipants })
+              .eq("id", eventID)
+              .select();
+            console.log(data);
+            setPartecipants(partecipants);
+            window.alert("Iscrizione avvenuta con successo");
+          } else {
+            window.alert("Sei già iscritto a questo evento");
+          }
+        } else {
+          window.alert("Non puoi iscriverti al tuo stesso evento");
+        }
+        //console.log(error, "error");
+      }
+    };
+    subscribe();
+  }, [subscribed]);
 
   if (back) {
     return <Home />;
@@ -65,21 +141,43 @@ const Details = ({ eventID }) => {
         </button>
         <h1 className="my-4 text-lg text-center">{eventInfo.circuit}</h1>
         <div className="flex justify-center items-center">
-          <button className="btn btn-outline btn-primary">Iscriviti</button>
+          <button
+            onClick={() => {
+              const subs = true;
+              setSubscribed(subs);
+            }}
+            className="btn btn-outline btn-primary"
+          >
+            Iscriviti
+          </button>
         </div>
       </div>
       <div className="bg-white my-4 mx-4 rounded-md">
-        <Image src={imgSrc} />
+        <Image src={imgSrc} alt="circuit Image" />
       </div>
-      <div className="grid grid-cols-2">
-        <h1 className="flex justify-center">Data:</h1>
-        <p className="flex justify-center">c</p>
-        <h1 className="flex justify-center">Indirizzo</h1>
-        <p className="flex justify-center">c</p>
-        <h1 className="flex justify-center"></h1>
-        <p className="flex justify-center">c</p>
-        <h1 className="flex justify-center">Persone:</h1>
-        <p className="flex justify-center"></p>
+      <div className="grid grid-cols-2 mx-4">
+        <div className="my-4">
+          <p>Creato da: {eventInfo.username}</p>
+        </div>
+        <div className="my-4">
+          <p>Dove: {eventInfo.location}</p>
+        </div>
+        <div className="my-4">
+          <p>
+            Quando: <br />
+            {readableDate}
+          </p>
+        </div>
+        <div className="my-4">
+          <p>TOT. partecipanti: {partecipants?.length || 1}</p>
+        </div>
+      </div>
+
+      <h1 className="flex justify-center my-4 text-lg">Partecipanti</h1>
+      <div className="flex justify-center flex-col items-center my-4">
+        {partecipants?.map((partecipant, index) => (
+          <p key={index}>{partecipant.username}</p>
+        ))}
       </div>
     </>
   );

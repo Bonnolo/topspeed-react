@@ -4,6 +4,7 @@ import misano from "../img/misano.png";
 import monzaParabolica from "../img/monzaParabolica.png";
 import blankAvatar from "../img/blankAvatar.webp";
 import Deatils from "./Details.jsx";
+import Profile from "./Profile.jsx";
 import { useState, useEffect } from "react";
 import { supabase } from "../../../supabase.js";
 
@@ -46,6 +47,7 @@ const Home = () => {
       const time = `${DD}/${MMstr}/${YYYY} ${hh}:${mm}`;
       temporanyEvents.push({
         id: event.id,
+        username: event.username,
         event: time,
         circuit: event.circuit,
         patecipants: event.partecipants,
@@ -58,6 +60,9 @@ const Home = () => {
   if (page === "details") {
     return <Deatils eventID={eventInfo} />;
   }
+  if (page === "profile") {
+    return <Profile />;
+  }
 
   return (
     <>
@@ -66,7 +71,12 @@ const Home = () => {
         <h1 className="flex justify-center my-4 text-lg">Home</h1>
         <div className="avatar flex justify-center items-center">
           <div className="w-12 h-12 rounded-full">
-            <button>
+            <button
+              onClick={(e) => {
+                const page = "profile";
+                setPage(page);
+              }}
+            >
               <Image src={blankAvatar} />
             </button>
           </div>
@@ -85,14 +95,15 @@ const Home = () => {
                       src={
                         event.circuit === "Misano" ? misano : monzaParabolica
                       }
-                      alt={event.circuit}
+                      alt="circuit img"
                     />
                   </figure>
                   <div className="card-body">
                     <h2 className="card-title">{event.circuit}</h2>
                     <p>
+                      <strong>Creato da: </strong> {event.username} <br />
                       <strong>Partecipanti: </strong>
-                      {event.patecipants?.length || 0}
+                      {event.patecipants?.length + 1 || 1}
                       <br />
                       <strong>Prossimo evento: </strong>
                       {event.event} <br />

@@ -25,7 +25,7 @@ const Register = () => {
         return;
       } else {
         //console.log("pushing data");
-        const { dberror } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email: email,
           password: password,
           options: {
@@ -34,9 +34,10 @@ const Register = () => {
             },
           },
         });
-        if (dberror) {
+        console.log(data, error);
+        if (error) {
           //console.log(dberror, "1");
-          window.alert(dberror);
+          window.alert(error);
         }
         window.alert(
           "Registrazione avvenuta con successo! Controlla la tua email per confermare l'account"
